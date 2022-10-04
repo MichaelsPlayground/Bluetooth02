@@ -31,4 +31,22 @@
         android:layout_height="wrap_content"
         android:text="3 Query Paired Devices" />
 
+    <Button
+        android:id="@+id/btn04DiscoverDevices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="4 Discover Devices" />
+
+    <Button
+        android:id="@+id/btn05SearchUncoupledDevices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="5 Search Uncoupled Devices" />
+
+    <Button
+        android:id="@+id/btn06MakeDeviceDiscoverable300Sec"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="6 Make device discoverable 300 seconds" />
+
 </LinearLayout>
