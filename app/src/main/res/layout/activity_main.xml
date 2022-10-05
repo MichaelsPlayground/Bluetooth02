@@ -49,4 +49,15 @@
         android:layout_height="wrap_content"
         android:text="6 Make device discoverable 300 seconds" />
 
+    <Button
+        android:id="@+id/btn07ConnectToGalaxyS4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="7 Connect To Galaxy S4" />
+
+    <Button
+        android:id="@+id/btn10AcceptConnections"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="10 Accept Connections" />
 </LinearLayout>

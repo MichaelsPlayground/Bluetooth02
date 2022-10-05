@@ -1,6 +1,7 @@
 package de.androidcrypto.bluetooth02;
 
 import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -11,10 +12,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,12 +34,38 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     Button btn01SetBluetoothAdapter, btn02EnableBluetooth, btn03QueryPairedDevices;
     Button btn04DiscoverDevices, btn05SearchUncoupledDevices, btn06MakeDeviceDiscoverable;
+    Button btn07ConnectToGalaxyS4;
+    Button btn10AcceptConnections;
 
     BluetoothManager bluetoothManager;
     BluetoothAdapter bluetoothAdapter;
 
     private static final String APP_NAME = "Bluetooth02";
     private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a60");
+
+    /**
+     * This block is for requesting permissions on Android 12+
+     * @param savedInstanceState
+     */
+
+    private static final int PERMISSIONS_REQUEST_CODE = 191;
+    private static final String[] BLE_PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+    };
+
+    private static final String[] ANDROID_12_BLE_PERMISSIONS = new String[]{
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
+    public static void requestBlePermissions(Activity activity, int requestCode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            ActivityCompat.requestPermissions(activity, ANDROID_12_BLE_PERMISSIONS, requestCode);
+        else
+            ActivityCompat.requestPermissions(activity, BLE_PERMISSIONS, requestCode);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
         btn04DiscoverDevices = findViewById(R.id.btn04DiscoverDevices);
         btn05SearchUncoupledDevices = findViewById(R.id.btn05SearchUncoupledDevices);
         btn06MakeDeviceDiscoverable = findViewById(R.id.btn06MakeDeviceDiscoverable300Sec);
+        btn07ConnectToGalaxyS4 = findViewById(R.id.btn07ConnectToGalaxyS4);
+
+        btn10AcceptConnections = findViewById(R.id.btn10AcceptConnections);
+
+        requestBlePermissions(this, PERMISSIONS_REQUEST_CODE);
 
         // https://developer.android.com/guide/topics/connectivity/bluetooth
         // https://developer.android.com/guide/topics/connectivity/bluetooth/setup#java
@@ -158,8 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("*** 5 search devices ***");
 
                 if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
+                    // TODO: Consider calling ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                     //                                          int[] grantResults)
@@ -185,8 +218,7 @@ public class MainActivity extends AppCompatActivity {
                         new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
                 discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
                 if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
+                    // TODO: Consider calling ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                     //                                          int[] grantResults)
@@ -199,6 +231,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // https://developer.android.com/guide/topics/connectivity/bluetooth/connect-bluetooth-devices
+        // Michael Fehr Galaxy S4 MAC: 10:D5:42:61:C3:1F
+        // Galaxy A5 (2017) MAC: 90:06:28:A6:0C:5C
+
+        btn07ConnectToGalaxyS4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //String macGalaxyS4 = "10:D5:42:61:C3:1F";
+                String macGalaxyS5 = "90:06:28:A6:0C:5C";
+                //System.out.println("7 ConnectToGalaxyS4, MAC: " + macGalaxyS4);
+                System.out.println("7 ConnectToGalaxyS5, MAC: " + macGalaxyS5);
+                // Get the BluetoothDevice object
+                BluetoothDevice device = bluetoothAdapter.getRemoteDevice(macGalaxyS5);
+                ConnectThread connectThread = new ConnectThread(device);
+
+                if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                Log.i("BT_CLIENT", "connectThread is initiated");
+                connectThread.run();
+            }
+        });
+
+        btn10AcceptConnections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("10 Accept Connections");
+                AcceptThread acceptThread = new AcceptThread();
+                //acceptThread.run();
+            }
+        });
     }
 
     // Create a BroadcastReceiver for ACTION_FOUND.
@@ -240,8 +309,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
+            // TODO: Consider calling ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
@@ -342,13 +410,16 @@ public class MainActivity extends AppCompatActivity {
                     //                                          int[] grantResults)
                     // to handle the case where the user grants the permission. See the documentation
                     // for ActivityCompat#requestPermissions for more details.
+                    Log.i("BT_CLIENT", "checkSelfPermission permission.BLUETOOTH_CONNECT failed");
                     return;
                 }
+                Log.i("BT_CLIENT", "createRfcommSocketToServiceRecord");
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) {
                 Log.e("BT_CLIENT", "Socket's create() method failed", e);
             }
             mmSocket = tmp;
+            Log.i("BT_CLIENT", "after createRfcommSocketToServiceRecord, mmSocket.isConnected = " + mmSocket.isConnected());
         }
 
         public void run() {
@@ -359,8 +430,11 @@ public class MainActivity extends AppCompatActivity {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
+                Log.i("BT_CLIENT", "checkSelfPermission permission.BLUETOOTH_SCAN failed");
                 return;
             }
+
+            Log.i("BT_CLIENT", "BEGIN ConnectThread");
 
             // Cancel discovery because it otherwise slows down the connection.
             bluetoothAdapter.cancelDiscovery();
@@ -370,6 +444,7 @@ public class MainActivity extends AppCompatActivity {
                 // until it succeeds or throws an exception.
                 mmSocket.connect();
             } catch (IOException connectException) {
+                Log.i("BT_CLIENT", "IOException connectException: " +connectException.toString());
                 // Unable to connect; close the socket and return.
                 try {
                     mmSocket.close();
