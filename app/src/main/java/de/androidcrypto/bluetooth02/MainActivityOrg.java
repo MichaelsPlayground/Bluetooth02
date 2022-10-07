@@ -17,10 +17,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -28,7 +26,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivityOrg extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 201;
     private static final int REQUEST_DISCOVERABLE_BT = 202;
@@ -89,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         requestBlePermissions(this, PERMISSIONS_REQUEST_CODE);
 
-        /*
         // https://developer.android.com/guide/topics/connectivity/bluetooth
         // https://developer.android.com/guide/topics/connectivity/bluetooth/setup#java
 
@@ -177,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 // Register for broadcasts when a device is discovered.
                 //IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                 //registerReceiver(receiver, filter);
-                Intent intent = new Intent(MainActivity.this, DeviceListActivity.class);
+                Intent intent = new Intent(MainActivityOrg.this, DeviceListActivity.class);
                 startActivity(intent);
             }
         });
@@ -273,20 +270,15 @@ public class MainActivity extends AppCompatActivity {
                 acceptThread.start();
             }
         });
-         */
 
-        // taken from https://stackoverflow.com/questions/45140098/how-to-send-receive-messages-via-bluetooth-android-studio
         btn20SimpleExample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+                Intent intent = new Intent(MainActivityOrg.this, MainActivity2.class);
                 startActivity(intent);
             }
         });
-
     }
-
-/*
 
     // Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -500,5 +492,5 @@ public class MainActivity extends AppCompatActivity {
     // https://developer.android.com/guide/topics/connectivity/bluetooth/transfer-data
     // public class MyBluetoothService {
 
-*/
+
 }

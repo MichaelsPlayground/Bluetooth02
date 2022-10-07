@@ -60,4 +60,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="10 Accept Connections" />
+
+    <Button
+        android:id="@+id/btn20SimpleExample"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="20 simple example" />
 </LinearLayout>

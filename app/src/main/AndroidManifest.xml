@@ -2,29 +2,36 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.androidcrypto.bluetooth02">
-
     <!-- Min/target SDK versions (<uses-sdk>) managed by build.gradle -->
     <!-- Request legacy Bluetooth permissions on older devices. -->
-    <uses-permission android:name="android.permission.BLUETOOTH"
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
         android:maxSdkVersion="30" />
-    <!-- Needed only if your app looks for Bluetooth devices.
+    <!--
+ Needed only if your app looks for Bluetooth devices.
          If your app doesn't use Bluetooth scan results to derive physical
          location information, you can strongly assert that your app
-         doesn't derive physical location. -->
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+         doesn't derive physical location.
+    -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
         android:usesPermissionFlags="neverForLocation"
-        tools:targetApi="s"/>
-    <!-- Needed only if your app makes the device discoverable to Bluetooth
-         devices. -->
+        tools:targetApi="s" />
+    <!--
+ Needed only if your app makes the device discoverable to Bluetooth
+         devices.
+    -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-    <!-- Needed only if your app communicates with already-paired Bluetooth
-         devices. -->
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-
-    <!-- Needed only if your app uses Bluetooth scan results to derive physical location. -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+    <!--
+ Needed only if your app communicates with already-paired Bluetooth
+         devices.
+    -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" /> <!-- Needed only if your app uses Bluetooth scan results to derive physical location. -->
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
         tools:ignore="CoarseFineLocation" />
 
     <application
@@ -38,6 +45,13 @@
         android:theme="@style/Theme.Bluetooth02"
         tools:targetApi="31">
         <activity
+            android:name=".MainActivity2"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -46,9 +60,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DeviceListActivity"
-            android:exported="false">
-        </activity>
+        <activity
+            android:name=".DeviceListActivity"
+            android:exported="false"></activity>
     </application>
 
 </manifest>
