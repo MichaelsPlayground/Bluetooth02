@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
     /**
-     * This block is for requesting permissions on Android 12+
+     * This block is for requesting permissions up to Android 12+
      * @param savedInstanceState
      */
 
